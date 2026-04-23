@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-source
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-source
+  template:
+    metadata:
+      labels:
+        app: task-source
+    spec:
+      containers:
+      - name: source
+        image: task-source:latest
+        imagePullPolicy: Never
+        env:
+        - name: MEDIA_PATH
+          value: "/media"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: media
+          mountPath: /media
+      volumes:
+      - name: media
+        emptyDir: {}

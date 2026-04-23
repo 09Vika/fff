@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: video-thumbnail-worker
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: ffmpeg-worker:latest
+        imagePullPolicy: Never
+        command: ["ffmpeg"]
+        args: ["-i", "/media/video.mp4", "-frames:v", "100", "/output/thumb.png"]
+        volumeMounts:
+        - name: media
+          mountPath: /media
+        - name: output
+          mountPath: /output
+      restartPolicy: Never
+      volumes:
+      - name: media
+        emptyDir: {}
+      - name: output
+        emptyDir: {}
